@@ -20,17 +20,32 @@ const createRule = (ruleString) => {
         }
     });
 
-    return stack[0]; // Return the root of the AST
+    return stack[0];
 };
 
 
 const evaluateRule = (ast, userData) => {
-    if (ast.type === "expression") {
-        const results = ast.conditions.map(condition => evaluateCondition(condition, userData));
-        return ast.operator === "AND" ? results.every(result => result) : results.some(result => result);
+    if (ast.type === "operator") {
+        const leftResult = evaluateRule(ast.left, userData);
+        const rightResult = evaluateRule(ast.right, userData);
+        return ast.value === "AND" ? leftResult && rightResult : leftResult || rightResult;
+    } else if (ast.type === "operand") {
+        const { attribute, operator, value } = ast.value;
+        const userValue = userData[attribute];
+
+        switch (operator) {
+            case '>': return userValue > value;
+            case '>=': return userValue >= value;
+            case '<': return userValue < value;
+            case '<=': return userValue <= value;
+            case '=': return userValue == value;
+            case '!=': return userValue != value;
+            default: return false;
+        }
     }
     return false;
-}
+};
+
 
 const evaluateCondition = (condition, userData) => {
     const { attribute, operator, value } = condition;
