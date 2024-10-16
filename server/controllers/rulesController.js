@@ -1,16 +1,15 @@
 const Rule = require("../models/Rule.js");
 
-const createRule = () => {
+const createRule = (ruleString) => {
     const tokens = ruleString.split(/\s+(AND|OR)\s+/).map(token => token.trim());
-    const ast = { type: "expression", operator: "AND", condition: [] };
+    const ast = { type: "expression", operator: "AND", conditions: [] };
 
     tokens.forEach(token => {
         if (token.includes("AND") || token.includes("OR")) {
-            as.operator = token;
-        }
-        else {
+            ast.operator = token;
+        } else {
             const [attr, operator, value] = token.split(/(>=|<=|!=|=|>|<)/).map(s => s.trim());
-            ast.condition.push({ type: "condition", attribute: attr, operator: operator, value: value });
+            ast.conditions.push({ type: "condition", attribute: attr, operator: operator, value: value });
         }
     });
 
@@ -19,13 +18,9 @@ const createRule = () => {
 
 const evaluateRule = (ast, userData) => {
     if (ast.type === "expression") {
-        const results = ast.conditions.map(condition => {
-            return evaluateCondition(condition, userData);
-        })
-
+        const results = ast.conditions.map(condition => evaluateCondition(condition, userData));
         return ast.operator === "AND" ? results.every(result => result) : results.some(result => result);
     }
-
     return false;
 }
 
@@ -44,7 +39,6 @@ const evaluateCondition = (condition, userData) => {
     }
 }
 
-
 exports.createRule = async (req, res) => {
     const { ruleString } = req.body;
     const ast = createRule(ruleString);
@@ -53,15 +47,13 @@ exports.createRule = async (req, res) => {
         const rule = new Rule({ ruleString });
         await rule.save();
         res.json({ ast });
-    }
-    catch (error) {
+    } catch (error) {
         res.status(500).json({ error: "Error Saving Rule" });
     }
 }
 
 exports.evaluateRule = (req, res) => {
     const { ast, userData } = req.body;
-
     const result = evaluateRule(ast, userData);
     res.json({ result });
 }
@@ -76,7 +68,7 @@ exports.combineRules = (req, res) => {
 
     rules.forEach(rule => {
         const ast = createRule(rule);
-        combinedAST.conditions.push(...ast.condition);
+        combinedAST.conditions.push(...ast.conditions);
     });
 
     res.json({ combinedAST });
