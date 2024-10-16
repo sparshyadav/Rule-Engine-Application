@@ -5,6 +5,15 @@ const RuleInput = () => {
     const [userData, setUserData] = useState({ age: '', department: '' });
     const [result, setResult] = useState(null);
 
+    const handleRuleSubmit = async () => {
+        const response = await axios.post('http://localhost:5000/api/rules/create', { ruleString });
+        console.log(response.data);
+    }
+
+    const handleEvaluate = async () => {
+        const response = await axios.post('http://localhost:5000/api/rules/evaluate', { ast: { type: "root", ruleString }, userData });
+        setResult(response.data.result);
+    }
 
     return (
         <div>
