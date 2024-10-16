@@ -1,7 +1,20 @@
 const Rule = require("../models/Rule.js");
 
 const createRule = () => {
-    return { type: root, ruleString }
+    const tokens = ruleString.split(/\s+(AND|OR)\s+/).map(token => token.trim());
+    const ast = { type: "expression", operator: "AND", condition: [] };
+
+    tokens.forEach(token => {
+        if (token.includes("AND") || token.includes("OR")) {
+            as.operator = token;
+        }
+        else {
+            const [attr, operator, value] = token.split(/(>=|<=|!=|=|>|<)/).map(s => s.trim());
+            ast.condition.push({ type: "condition", attribute: attr, operator: operator, value: value });
+        }
+    });
+
+    return ast;
 }
 
 const evaluateRule = (ast, userData) => {
@@ -41,4 +54,8 @@ exports.evaluateRule = (req, res) => {
     const { ast, userData } = req.body;
     const result = evaluateRule(ast, userData);
     res.json({ result });
+}
+
+exports.combineRules = (req, res) => {
+
 }
