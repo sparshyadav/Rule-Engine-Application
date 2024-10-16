@@ -1,20 +1,28 @@
 const Rule = require("../models/Rule.js");
 
 const createRule = (ruleString) => {
+    const parseCondition = (condition) => {
+        const [attr, operator, value] = condition.split(/(>=|<=|!=|=|>|<)/).map(s => s.trim());
+        return new Node("operand", { attribute: attr, operator, value });
+    };
+
     const tokens = ruleString.split(/\s+(AND|OR)\s+/).map(token => token.trim());
-    const ast = { type: "expression", operator: "AND", conditions: [] };
+    const stack = [];
 
     tokens.forEach(token => {
-        if (token.includes("AND") || token.includes("OR")) {
-            ast.operator = token;
+        if (token === "AND" || token === "OR") {
+            const right = stack.pop();
+            const left = stack.pop();
+            const operatorNode = new Node("operator", token, left, right);
+            stack.push(operatorNode);
         } else {
-            const [attr, operator, value] = token.split(/(>=|<=|!=|=|>|<)/).map(s => s.trim());
-            ast.conditions.push({ type: "condition", attribute: attr, operator: operator, value: value });
+            stack.push(parseCondition(token));
         }
     });
 
-    return ast;
-}
+    return stack[0]; // Return the root of the AST
+};
+
 
 const evaluateRule = (ast, userData) => {
     if (ast.type === "expression") {
