@@ -18,23 +18,32 @@ const createRule = () => {
 }
 
 const evaluateRule = (ast, userData) => {
-    const conditions = ast.ruleString.split('AND').map(condition => condition.trim());
+    if (ast.type === "expression") {
+        const results = ast.conditions.map(condition => {
+            return evaluateCondition(condition, userData);
+        })
 
-    return conditions.every(condition => {
-        const [attr, operator, value] = condition.split(/(>=|<=|!=|=|>|<)/).map(s => s.trim());
-        const userValue = userData[attr];
+        return ast.operator === "AND" ? results.every(result => result) : results.some(result => result);
+    }
 
-        switch (operator) {
-            case '>': return userValue > value;
-            case '<': return userValue < value;
-            case '>=': return userValue >= value;
-            case '<=': return userValue <= value;
-            case '!=': return userValue != value;
-            case '=': return userValue == value;
-            default: return false;
-        }
-    });
+    return false;
 }
+
+const evaluateCondition = (condition, userData) => {
+    const { attribute, operator, value } = condition;
+    const userValue = userData[attribute];
+
+    switch (operator) {
+        case '>': return userValue > value;
+        case '>=': return userValue >= value;
+        case '<': return userValue < value;
+        case '<=': return userValue <= value;
+        case '=': return userValue == value;
+        case '!=': return userValue != value;
+        default: return false;
+    }
+}
+
 
 exports.createRule = async (req, res) => {
     const { ruleString } = req.body;
@@ -52,10 +61,23 @@ exports.createRule = async (req, res) => {
 
 exports.evaluateRule = (req, res) => {
     const { ast, userData } = req.body;
+
     const result = evaluateRule(ast, userData);
     res.json({ result });
 }
 
 exports.combineRules = (req, res) => {
+    const { rules } = req.body;
+    const combinedAST = {
+        type: "expression",
+        operator: "AND",
+        conditions: []
+    }
 
+    rules.forEach(rule => {
+        const ast = createRule(rule);
+        combinedAST.conditions.push(...ast.condition);
+    });
+
+    res.json({ combinedAST });
 }
