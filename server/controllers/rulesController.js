@@ -83,16 +83,18 @@ exports.evaluateRule = (req, res) => {
 
 exports.combineRules = (req, res) => {
     const { rules } = req.body;
-    const combinedAST = {
-        type: "expression",
-        operator: "AND",
-        conditions: []
-    }
+    const combinedAST = new Node("operator", "AND");
 
     rules.forEach(rule => {
         const ast = createRule(rule);
-        combinedAST.conditions.push(...ast.conditions);
+        if (!combinedAST.left) {
+            combinedAST.left = ast;
+        } else {
+            const newOperatorNode = new Node("operator", "OR", combinedAST.right, ast);
+            combinedAST.right = newOperatorNode;
+        }
     });
 
     res.json({ combinedAST });
-}
+};
+
