@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-const BASE_URL = "http://localhost:2000"
+const BASE_URL = "https://rule-engine-backend-v9zm.onrender.com/"
 
 const RuleEngine = () => {
   const [createRuleResult, setCreateRuleResult] = useState('');
