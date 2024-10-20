@@ -15,7 +15,7 @@ const RuleEngine = () => {
     const ruleName = event.target.ruleName.value;
     const ruleString = event.target.ruleString.value;
     console.log(ruleName, ruleString)
-    const response = await fetch(BASE_URL +'/api/rules/create_rule', {
+    const response = await fetch(BASE_URL + '/api/rules/create_rule', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ruleName, ruleString }),
@@ -28,7 +28,7 @@ const RuleEngine = () => {
     event.preventDefault();
     const op = event.target.operator1.value;
     const rulesToCombine = rules.map(rule => rule.value);
-    const response = await fetch(BASE_URL +'/api/rules/combine_rules', {
+    const response = await fetch(BASE_URL + '/api/rules/combine_rules', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ rules: rulesToCombine, op }),
@@ -41,7 +41,7 @@ const RuleEngine = () => {
     event.preventDefault();
     const ast = event.target.ast.value;
     const data = event.target.data.value;
-    const response = await fetch(BASE_URL +'/api/rules/evaluate_rule', {
+    const response = await fetch(BASE_URL + '/api/rules/evaluate_rule', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ast, data: JSON.parse(data) }),
@@ -69,7 +69,7 @@ const RuleEngine = () => {
   return (
     <div className="container mx-auto p-4 max-w-2xl">
       <h1 className="text-3xl font-bold text-center text-blue-500 mb-6">Rule Engine Application</h1>
-      
+
       <section className="mb-8">
         <h2 className="text-2xl font-semibold text-center text-blue-500 mb-4">Create Rule</h2>
         <form onSubmit={handleCreateRule} className="space-y-4">
