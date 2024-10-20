@@ -68,10 +68,10 @@ const RuleEngine = () => {
 
   return (
     <div className="container mx-auto p-4 max-w-2xl">
-      <h1 className="text-3xl font-bold text-center text-green-600 mb-6">Rule Engine Application</h1>
+      <h1 className="text-3xl font-bold text-center text-blue-500 mb-6">Rule Engine Application</h1>
       
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold text-center text-green-600 mb-4">Create Rule</h2>
+        <h2 className="text-2xl font-semibold text-center text-blue-500 mb-4">Create Rule</h2>
         <form onSubmit={handleCreateRule} className="space-y-4">
           <div>
             <label htmlFor="ruleName" className="block mb-1">Rule Name:</label>
@@ -81,13 +81,13 @@ const RuleEngine = () => {
             <label htmlFor="ruleString" className="block mb-1">Rule:</label>
             <input type="text" id="ruleString" name="ruleString" required className="w-full p-2 border rounded" />
           </div>
-          <button type="submit" className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">Create Rule</button>
+          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-green-600">Create Rule</button>
         </form>
         <pre className="mt-4 p-2 bg-gray-100 rounded whitespace-pre-wrap">{createRuleResult}</pre>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold text-center text-green-600 mb-4">Combine Rules</h2>
+        <h2 className="text-2xl font-semibold text-center text-blue-500 mb-4">Combine Rules</h2>
         <form onSubmit={handleCombineRules} className="space-y-4">
           <h3 className="text-xl font-medium mb-2">Enter Rules to Combine:</h3>
           {rules.map((rule, index) => (
@@ -113,13 +113,13 @@ const RuleEngine = () => {
             </div>
           ))}
           <button type="button" onClick={addRule} className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Add Another Rule</button>
-          <button type="submit" className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">Combine Rules</button>
+          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-green-600">Combine Rules</button>
         </form>
         <pre className="mt-4 p-2 bg-gray-100 rounded whitespace-pre-wrap">{combineRulesResult}</pre>
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold text-center text-green-600 mb-4">Evaluate Rule</h2>
+        <h2 className="text-2xl font-semibold text-center text-blue-500 mb-4">Evaluate Rule</h2>
         <form onSubmit={handleEvaluateRule} className="space-y-4">
           <div>
             <label htmlFor="evaluate-ast" className="block mb-1">Rule Name:</label>
@@ -129,7 +129,7 @@ const RuleEngine = () => {
             <label htmlFor="evaluate-data" className="block mb-1">Data JSON:</label>
             <textarea id="evaluate-data" name="data" required className="w-full p-2 border rounded h-24"></textarea>
           </div>
-          <button type="submit" className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">Evaluate Rule</button>
+          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-green-600">Evaluate Rule</button>
         </form>
         <pre className="mt-4 p-2 bg-gray-100 rounded whitespace-pre-wrap">{evaluateRuleResult}</pre>
       </section>
